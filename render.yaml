@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: sports-analyze
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FLASK_ENV
+        value: production

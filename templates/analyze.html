@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Push-Up Analysis</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; }
+    .container { max-width: 1200px; margin: 30px auto; padding: 16px; }
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start; }
+    .panel { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; }
+    .panel h2 { margin: 8px 0 12px; color: #93c5fd; }
+    .video-wrapper { display: flex; justify-content: center; align-items: center; background: #0b1220; border-radius: 8px; overflow: hidden; }
+    img.stream { width: 100%; height: auto; display: block; }
+    .metric { margin: 8px 0; font-size: 1.1rem; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #0b1220; border: 1px solid #334155; color: #cbd5e1; }
+    .row { display: flex; align-items: center; justify-content: space-between; }
+    .actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+    a.button, button.button { padding: 8px 12px; border-radius: 8px; background: #2563eb; color: white; text-decoration: none; border: none; cursor: pointer; }
+    a.button:hover, button.button:hover { background: #1d4ed8; }
+    .muted { color: #94a3b8; font-size: 0.9rem; }
+    .ai { margin-top: 16px; }
+    textarea { width: 100%; min-height: 90px; border-radius: 8px; border: 1px solid #334155; background: #0b1220; color: #e2e8f0; padding: 8px; }
+    .insights { white-space: pre-wrap; background: #0b1220; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-top: 10px; min-height: 80px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid">
+      <div class="panel">
+        <h2>Annotated Stream</h2>
+        <div class="video-wrapper">
+          <img class="stream" src="/stream/{{ session_id }}" alt="Live Analysis Stream" />
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Live Metrics</h2>
+        <div class="metric">Reps: <span id="count" class="tag">0</span></div>
+        <div class="metric">Elbow angle: <span id="elbow_angle" class="tag">0</span></div>
+        <div class="metric">Hip angle: <span id="hip_angle" class="tag">0</span></div>
+        <div class="metric">Feedback: <span id="feedback" class="tag">-</span></div>
+        <div class="actions">
+          <a id="download" class="button" href="#" download>Download CSV</a>
+        </div>
+        <p class="muted">Analysis runs once; metrics stop updating when finished.</p>
+        <div class="ai">
+          <h2>AI Insights</h2>
+          <p class="muted">Ask Gemini to review this session and suggest the best exercises.</p>
+          <textarea id="ai_prompt" placeholder="e.g., Analyze all data and recommend the best exercises and progressions for my push-ups based on this session. Include sets, reps, cues, and safety notes."></textarea>
+          <div class="actions">
+            <button id="ask_btn" class="button">Get AI Insights</button>
+          </div>
+          <div id="insights" class="insights">No insights yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const sessionId = "{{ session_id }}";
+    const countEl = document.getElementById('count');
+    const elbowEl = document.getElementById('elbow_angle');
+    const hipEl = document.getElementById('hip_angle');
+    const feedbackEl = document.getElementById('feedback');
+    const downloadEl = document.getElementById('download');
+
+    downloadEl.href = `/download/${sessionId}`;
+
+    let stopped = false;
+    async function pollMetrics(){
+      if(stopped) return;
+      try{
+        const res = await fetch(`/metrics/${sessionId}`);
+        if(res.ok){
+          const data = await res.json();
+          countEl.textContent = data.count;
+          elbowEl.textContent = data.elbow_angle;
+          hipEl.textContent = data.hip_angle;
+          feedbackEl.textContent = data.feedback || '-';
+          if(data.is_done){
+            stopped = true;
+          }
+        }
+      }catch(e){
+        // ignore transient errors
+      }finally{
+        if(!stopped){
+          setTimeout(pollMetrics, 500);
+        }
+      }
+    }
+
+    pollMetrics();
+
+    // AI Insights
+    const askBtn = document.getElementById('ask_btn');
+    const promptEl = document.getElementById('ai_prompt');
+    const insightsEl = document.getElementById('insights');
+
+    askBtn.addEventListener('click', async () => {
+      const prompt = (promptEl.value || '').trim();
+      insightsEl.textContent = 'Thinking...';
+      askBtn.disabled = true;
+      try{
+        const res = await fetch(`/insights/${sessionId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        if(!res.ok){
+          const err = await res.json().catch(()=>({error:'Request failed'}));
+          insightsEl.textContent = `Error: ${err.error || res.status}`;
+        } else {
+          const data = await res.json();
+          insightsEl.textContent = data.insights || 'No insights.';
+        }
+      }catch(e){
+        insightsEl.textContent = 'Request failed.';
+      }finally{
+        askBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
