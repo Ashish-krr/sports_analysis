@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 # Build script for Render deployment
 
-set -o errexit  # Exit on error
+set -o errexit
 
-# Install Python dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Create necessary directories
-mkdir -p static/uploads
-mkdir -p static/sessions
-mkdir -p static/profiles
+# Create directories
+mkdir -p static/uploads static/sessions static/profiles
 
-echo "Build completed successfully - MediaPipe disabled for compatibility"
+echo "Build completed successfully"
