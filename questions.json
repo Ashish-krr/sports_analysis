@@ -1,0 +1,30 @@
+[
+  {
+    "id": "396f31b6-fe35-4996-97f4-faec91974b99",
+    "question": "how to i improve my posture in this exercise",
+    "category": "general",
+    "author_id": "411cd08d-ddcf-424e-8b1e-6ff48f6e8e39",
+    "author_name": "Ashish kumar",
+    "author_type": "athlete",
+    "created_at": "2025-09-30T10:11:55.122177",
+    "answers": [
+      {
+        "id": "f9af3174-4cc5-4595-ab63-5f1d3fcba234",
+        "answer": "do some running exercise with good posture",
+        "author_id": "a6cbffef-dd41-4456-8ba5-35f53994da1a",
+        "author_name": "Ashish kumar",
+        "author_type": "professional",
+        "created_at": "2025-09-30T10:13:31.901762"
+      },
+      {
+        "id": "789eedf8-4967-44a0-853d-871a79608111",
+        "answer": "do some straight yoga",
+        "author_id": "ada1ae29-3fe2-4eab-aa8e-0a2611a6c01f",
+        "author_name": "Ashish kumar",
+        "author_type": "professional",
+        "created_at": "2025-09-30T10:15:00.540112"
+      }
+    ],
+    "status": "answered"
+  }
+]

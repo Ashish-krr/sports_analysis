@@ -3,27 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Push-Up Analysis - Upload</title>
+  <title>Exercise Analysis - Upload</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <style>
-    body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; }
-    .container { max-width: 900px; margin: 60px auto; padding: 24px; background: #111827; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-    h1 { margin-top: 0; color: #93c5fd; }
-    p { color: #cbd5e1; }
-    .card { border: 1px solid #1f2937; padding: 20px; border-radius: 10px; background: #0b1220; }
-    input[type="file"] { padding: 10px; background: #0b1220; border: 1px dashed #334155; color: #e2e8f0; border-radius: 8px; width: 100%; }
-    .actions { margin-top: 16px; }
-    button { padding: 10px 16px; border-radius: 8px; background: #2563eb; color: white; border: none; cursor: pointer; }
-    button:hover { background: #1d4ed8; }
-    .hint { font-size: 0.9rem; color: #94a3b8; margin-top: 8px; }
+    :root{ --bg:#0a0f1f; --panel:#0f172a; --card:#0b1220; --muted:#94a3b8; --text:#e2e8f0; --brand:#22c55e; --accent:#60a5fa; --line:#1f2937; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(1200px 600px at 70% -10%, rgba(34,197,94,.18), transparent), var(--bg); color: var(--text); }
+    .nav { position: sticky; top: 0; z-index: 10; background: rgba(15,23,42,.85); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .3px; color: white; }
+    .brand .logo { width: 28px; height: 28px; background: linear-gradient(135deg,var(--brand),#16a34a); border-radius: 8px; box-shadow: 0 0 20px rgba(34,197,94,.35) inset; }
+    .brand span.small { color: var(--muted); font-weight: 600; font-size: .9rem; margin-left: 8px; }
+    .cta a { color: #0a0f1f; background: var(--brand); border-radius: 10px; padding: 8px 12px; text-decoration: none; font-weight: 700; }
+    .cta a:hover { background: #16a34a; }
+
+    .hero { max-width: 1100px; margin: 26px auto 0; padding: 0 16px 8px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; align-items: center; }
+    .hero h1 { margin: 0; font-size: 2rem; color: white; }
+    .hero p { margin: 6px 0 0; color: var(--muted); }
+    .hero .badge { display:inline-block; margin-bottom:10px; border:1px solid #1f2937; color:#bbf7d0; background:rgba(34,197,94,.08); padding:4px 8px; border-radius:999px; font-size:.8rem; }
+    .hero-card { background: linear-gradient(180deg, rgba(96,165,250,.04), transparent 60%), var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+
+    .container { max-width: 1100px; margin: 12px auto 60px; padding: 0 16px; }
+    .card { border: 1px solid var(--line); padding: 20px; border-radius: 12px; background: var(--card); }
+    label { display:block; margin: 8px 0 6px; color: #c7d2fe; font-weight: 600; }
+    select, input[type="file"] { padding: 12px; background: #0b1220; border: 1px solid #334155; color: var(--text); border-radius: 10px; width: 100%; }
+    .actions { margin-top: 16px; display:flex; gap:10px; }
+    button { padding: 12px 16px; border-radius: 10px; background: var(--brand); color: #0a0f1f; border: none; cursor: pointer; font-weight: 800; }
+    button:hover { background: #16a34a; }
+    .hint { font-size: 0.9rem; color: var(--muted); margin-top: 8px; }
+    .features { display:flex; gap:12px; flex-wrap:wrap; margin-top: 10px; }
+    .pill { border: 1px solid var(--line); background: #0b1220; color: #cbd5e1; border-radius: 999px; padding: 6px 10px; font-size: .85rem; }
   </style>
 </head>
 <body>
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand"><div class="logo"></div> RannNiti <span class="small">by Vision AI</span></div>
+      <div class="cta">
+        <a href="/history">History</a>
+        <a href="/" style="margin-left: 10px;">Home</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-card">
+      <span class="badge">AI Form Coach</span>
+      <h1>Analyze your training like a pro</h1>
+      <p>Upload workout clips for instant rep counts, form cues, and shareable session stats.</p>
+      <div class="features">
+        <span class="pill">Push-up</span>
+        <span class="pill">Pull-up</span>
+        <span class="pill">Sit-up</span>
+        <span class="pill">Jumping Jack</span>
+        <span class="pill">Plank</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div style="height:100%;display:flex;align-items:center;justify-content:center;opacity:.9;">
+        <svg width="220" height="120" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="218" height="118" rx="10" stroke="#1f2937"/>
+          <path d="M10 90 C 40 40, 80 60, 110 30 S 180 70, 210 50" stroke="#22c55e" stroke-width="3" fill="none"/>
+          <circle cx="110" cy="30" r="4" fill="#60a5fa"/>
+          <circle cx="40" cy="70" r="3" fill="#60a5fa"/>
+        </svg>
+      </div>
+    </div>
+  </div>
   <div class="container">
-    <h1>Push-Up Analyzer</h1>
-    <p>Upload a video to analyze form, rep count, and get feedback.</p>
     <div class="card">
       <form action="/analyze" method="POST" enctype="multipart/form-data">
+        <label for="exercise">Choose exercise:</label>
+        <select id="exercise" name="exercise" required style="width:100%; padding:10px; margin:6px 0 14px; border-radius:8px; background:#0b1220; border:1px solid #334155; color:#e2e8f0;">
+          <option value="pushup" selected>Push-up</option>
+          <option value="pullup">Pull-up</option>
+          <option value="situp">Sit-up</option>
+          <option value="jumping_jack">Jumping Jack</option>
+          <option value="plank">Plank</option>
+        </select>
         <label for="video">Choose a video file (e.g., mp4, mov):</label>
         <input id="video" type="file" name="video" accept="video/*" required />
         <div class="actions">
@@ -32,6 +87,160 @@
         <div class="hint">Your video is processed locally on this server.</div>
       </form>
     </div>
+    <div class="card" style="margin-top:14px;">
+      <h2 style="margin:8px 0 10px; color:#93c5fd;">Speed Test (GPS)</h2>
+      <p class="hint">Use your device GPS to measure real-time speed and distance while moving outdoors.</p>
+      <div class="actions">
+        <button id="start_gps">Start</button>
+        <button id="stop_gps" style="background:#334155; color:#e2e8f0;">Stop</button>
+        <button id="reset_gps" style="background:#111827; color:#e2e8f0; border:1px solid #334155;">Reset</button>
+      </div>
+      <div class="features" style="margin-top:10px;">
+        <span class="pill">Time: <span id="gps_time">0.0s</span></span>
+        <span class="pill">Distance: <span id="gps_dist">0.00 km</span></span>
+        <span class="pill">Avg Speed: <span id="gps_avg">0.0 km/h</span></span>
+        <span class="pill">Current: <span id="gps_curr">0.0 km/h</span></span>
+      </div>
+      <div id="map" style="height:320px; border-radius:10px; border:1px solid #1f2937; margin-top:10px; overflow:hidden;"></div>
+      <p class="hint">Requires location permission. Map and speed are computed client-side using GPS.</p>
+    </div>
   </div>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function(){
+      const startBtn = document.getElementById('start_gps');
+      const stopBtn = document.getElementById('stop_gps');
+      const resetBtn = document.getElementById('reset_gps');
+      const timeEl = document.getElementById('gps_time');
+      const distEl = document.getElementById('gps_dist');
+      const avgEl = document.getElementById('gps_avg');
+      const currEl = document.getElementById('gps_curr');
+
+      let map, layer, poly;
+      let watchId = null;
+      let points = [];
+      let startTime = null;
+      let timerId = null;
+      let saved = false;
+
+      function initMap(){
+        if(map) return;
+        map = L.map('map');
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+        poly = L.polyline([], { color: '#22c55e', weight: 4 }).addTo(map);
+        layer = L.layerGroup().addTo(map);
+      }
+
+      function haversine(lat1, lon1, lat2, lon2){
+        const R = 6371e3; // meters
+        const toRad = x => x * Math.PI/180;
+        const dlat = toRad(lat2-lat1);
+        const dlon = toRad(lon2-lon1);
+        const a = Math.sin(dlat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dlon/2)**2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c; // meters
+      }
+
+      function updateMetrics(){
+        if(!startTime) return;
+        const elapsed = (Date.now() - startTime) / 1000; // sec
+        const distMeters = points.reduce((acc, p, i) => {
+          if(i === 0) return 0;
+          const prev = points[i-1];
+          return acc + haversine(prev.lat, prev.lng, p.lat, p.lng);
+        }, 0);
+        const distKm = distMeters / 1000;
+        const avgKmh = elapsed > 0 ? (distKm / (elapsed/3600)) : 0;
+        timeEl.textContent = `${elapsed.toFixed(1)}s`;
+        distEl.textContent = `${distKm.toFixed(2)} km`;
+        avgEl.textContent = `${avgKmh.toFixed(1)} km/h`;
+      }
+
+      function onPosition(pos){
+        const { latitude:lat, longitude:lng, speed } = pos.coords; // speed m/s (may be null)
+        points.push({ lat, lng, t: Date.now() });
+        if(points.length === 1){
+          map.setView([lat, lng], 16);
+        } else {
+          poly.addLatLng([lat, lng]);
+          map.fitBounds(poly.getBounds(), { padding:[20,20] });
+        }
+        if(typeof speed === 'number' && !Number.isNaN(speed)){
+          currEl.textContent = `${(speed * 3.6).toFixed(1)} km/h`;
+        } else if(points.length >= 2){
+          const a = points[points.length-2];
+          const b = points[points.length-1];
+          const d = haversine(a.lat, a.lng, b.lat, b.lng); // meters
+          const dt = (b.t - a.t) / 1000; // sec
+          const v = dt > 0 ? (d/dt) * 3.6 : 0; // km/h
+          currEl.textContent = `${v.toFixed(1)} km/h`;
+        }
+        updateMetrics();
+      }
+
+      function onError(err){
+        console.warn('Geolocation error', err);
+      }
+
+      function start(){
+        initMap();
+        if(watchId !== null) return;
+        points = [];
+        poly.setLatLngs([]);
+        startTime = Date.now();
+        timerId = setInterval(updateMetrics, 500);
+        watchId = navigator.geolocation.watchPosition(onPosition, onError, { enableHighAccuracy: true, maximumAge: 500, timeout: 10000 });
+      }
+      function stop(){
+        if(watchId !== null){
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+        }
+        if(timerId){ clearInterval(timerId); timerId = null; }
+        // Save run summary to localStorage
+        if(!startTime || saved) return;
+        const elapsed = (Date.now() - startTime) / 1000;
+        const distMeters = points.reduce((acc, p, i) => {
+          if(i === 0) return 0;
+          const prev = points[i-1];
+          return acc + haversine(prev.lat, prev.lng, p.lat, p.lng);
+        }, 0);
+        const distKm = distMeters / 1000;
+        const avgKmh = elapsed > 0 ? (distKm / (elapsed/3600)) : 0;
+        const runs = JSON.parse(localStorage.getItem('gps_runs') || '[]');
+        runs.push({
+          title: 'Outdoor Run',
+          started_at: startTime,
+          duration_s: elapsed,
+          distance_km: distKm,
+          avg_kmh: avgKmh
+        });
+        localStorage.setItem('gps_runs', JSON.stringify(runs));
+        saved = true;
+      }
+      function reset(){
+        stop();
+        startTime = null;
+        points = [];
+        timeEl.textContent = '0.0s';
+        distEl.textContent = '0.00 km';
+        avgEl.textContent = '0.0 km/h';
+        currEl.textContent = '0.0 km/h';
+        if(poly) poly.setLatLngs([]);
+        saved = false;
+      }
+
+      startBtn.addEventListener('click', () => {
+        if(!('geolocation' in navigator)){
+          alert('Geolocation not supported on this device.');
+          return;
+        }
+        start();
+      });
+      stopBtn.addEventListener('click', stop);
+      resetBtn.addEventListener('click', reset);
+    })();
+  </script>
 </body>
 </html>

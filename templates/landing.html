@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsAnalyze - AI-Powered Sports Performance Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        :root {
+            --bg: #0a0f1f;
+            --panel: #0f172a;
+            --card: #0b1220;
+            --muted: #94a3b8;
+            --text: #e2e8f0;
+            --brand: #22c55e;
+            --accent: #60a5fa;
+            --line: #1f2937;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(1200px 600px at 70% -10%, rgba(34,197,94,.18), transparent), var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15,23,42,.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--brand), #16a34a);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(34,197,94,.35) inset;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--brand);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, var(--brand));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--brand);
+            color: #0a0f1f;
+        }
+        
+        .btn-primary:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--line);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--line);
+            transform: translateY(-2px);
+        }
+        
+        /* User Type Cards */
+        .user-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+        
+        .user-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--brand);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand);
+        }
+        
+        .user-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .user-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .user-card p {
+            color: var(--muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .user-card .icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--accent), var(--brand));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .modal-header h2 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .close:hover {
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--brand);
+        }
+        
+        .user-type-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .user-type-option {
+            padding: 15px;
+            background: var(--card);
+            border: 2px solid var(--line);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .user-type-option:hover {
+            border-color: var(--brand);
+        }
+        
+        .user-type-option.selected {
+            border-color: var(--brand);
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .user-type-option h4 {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .user-type-option p {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .form-actions .btn {
+            flex: 1;
+        }
+        
+        .switch-form {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--muted);
+        }
+        
+        .switch-form a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+        
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: rgba(15, 23, 42, 0.3);
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .feature-card .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--accent), var(--brand));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .feature-card p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--panel);
+            border-top: 1px solid var(--line);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--muted);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .user-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-type-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <div class="logo-icon"></div>
+                    RannNiti
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>AI-Powered Sports Performance Analysis</h1>
+            <p>Transform your training with advanced computer vision and AI insights. Perfect for athletes, coaches, and fitness enthusiasts.</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="openModal('signup')">Get Started</button>
+                <button class="btn btn-secondary" onclick="openModal('signin')">Sign In</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Types -->
+    <section class="user-types">
+        <div class="container">
+            <div class="user-card" onclick="selectUserType('professional')">
+                <div class="icon">🏆</div>
+                <h3>Professional Athletes</h3>
+                <p>Advanced performance analytics, detailed biomechanical analysis, and professional-grade insights to optimize your competitive edge.</p>
+            </div>
+            <div class="user-card" onclick="selectUserType('athlete')">
+                <div class="icon">💪</div>
+                <h3>Fitness Athletes</h3>
+                <p>Personalized workout analysis, form correction, and progress tracking to help you reach your fitness goals faster and safer.</p>
+            </div>
+            <div class="user-card" onclick="selectUserType('coach')">
+                <div class="icon">👨‍🏫</div>
+                <h3>Coaches & Trainers</h3>
+                <p>Comprehensive athlete monitoring, team analytics, and coaching tools to elevate your athletes' performance and technique.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📹</div>
+                    <h3>Video Analysis</h3>
+                    <p>Upload workout videos and get instant rep counting, form analysis, and technique feedback using advanced computer vision.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Performance Metrics</h3>
+                    <p>Track your progress with detailed analytics including rep counts, form quality, and performance trends over time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3>AI Coaching</h3>
+                    <p>Get personalized training recommendations and form corrections powered by advanced AI and sports science.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📱</div>
+                    <h3>Real-time Feedback</h3>
+                    <p>Receive instant feedback during your workouts with live form analysis and performance monitoring.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Account</h2>
+                <button class="close" onclick="closeModal('signup')">&times;</button>
+            </div>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="user-type-selector">
+                    <div class="user-type-option" data-type="professional" onclick="selectModalUserType('professional')">
+                        <h4>🏆 Professional</h4>
+                        <p>Elite Athletes</p>
+                    </div>
+                    <div class="user-type-option" data-type="athlete" onclick="selectModalUserType('athlete')">
+                        <h4>💪 Athlete</h4>
+                        <p>Fitness Enthusiasts</p>
+                    </div>
+                    <div class="user-type-option" data-type="coach" onclick="selectModalUserType('coach')">
+                        <h4>👨‍🏫 Coach</h4>
+                        <p>Trainers</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" name="confirmPassword" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('signup')">Cancel</button>
+                </div>
+            </form>
+            <div class="switch-form">
+                Already have an account? <a href="#" onclick="switchToSignin()">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Sign In</h2>
+                <button class="close" onclick="closeModal('signin')">&times;</button>
+            </div>
+            <form id="signinForm" onsubmit="handleSignin(event)">
+                <div class="form-group">
+                    <label for="signinEmail">Email</label>
+                    <input type="email" id="signinEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signinPassword">Password</label>
+                    <input type="password" id="signinPassword" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('signin')">Cancel</button>
+                </div>
+            </form>
+            <div class="switch-form">
+                Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 SportsAnalyze. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let selectedUserType = '';
+
+        function openModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function selectUserType(type) {
+            selectedUserType = type;
+            openModal('signup');
+        }
+
+        function selectModalUserType(type) {
+            selectedUserType = type;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.user-type-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+        }
+
+        function switchToSignin() {
+            closeModal('signup');
+            openModal('signin');
+        }
+
+        function switchToSignup() {
+            closeModal('signin');
+            openModal('signup');
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const userData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword'),
+                userType: selectedUserType
+            };
+
+            if (userData.password !== userData.confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            if (!selectedUserType) {
+                alert('Please select a user type!');
+                return;
+            }
+
+            // Send signup request
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Account created successfully!');
+                    closeModal('signup');
+                    // Redirect to dashboard based on user type
+                    window.location.href = `/dashboard/${selectedUserType}`;
+                } else {
+                    alert(data.message || 'Signup failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+
+        function handleSignin(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const userData = {
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            // Send signin request
+            fetch('/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Signed in successfully!');
+                    closeModal('signin');
+                    // Redirect to dashboard based on user type
+                    window.location.href = `/dashboard/${data.userType}`;
+                } else {
+                    alert(data.message || 'Sign in failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const signupModal = document.getElementById('signupModal');
+            const signinModal = document.getElementById('signinModal');
+            
+            if (event.target === signupModal) {
+                closeModal('signup');
+            }
+            if (event.target === signinModal) {
+                closeModal('signin');
+            }
+        }
+    </script>
+</body>
+</html>
+

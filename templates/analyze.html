@@ -3,13 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Push-Up Analysis</title>
+  <title>Exercise Analysis</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <style>
-    body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; }
-    .container { max-width: 1200px; margin: 30px auto; padding: 16px; }
-    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start; }
-    .panel { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; }
+    :root{ --bg:#0a0f1f; --panel:#0f172a; --card:#0b1220; --muted:#94a3b8; --text:#e2e8f0; --brand:#22c55e; --accent:#60a5fa; --line:#1f2937; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(1200px 600px at 70% -10%, rgba(34,197,94,.18), transparent), var(--bg); color: var(--text); }
+    .nav { position: sticky; top: 0; z-index: 10; background: rgba(15,23,42,.85); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .3px; color: white; }
+    .brand .logo { width: 28px; height: 28px; background: linear-gradient(135deg,var(--brand),#16a34a); border-radius: 8px; box-shadow: 0 0 20px rgba(34,197,94,.35) inset; }
+    .brand a { color: #cbd5e1; text-decoration: none; font-weight: 600; }
+
+    .container { max-width: 1200px; margin: 16px auto 40px; padding: 0 16px; display:grid; grid-template-columns: 260px 1fr; gap: 16px; }
+    .sidebar { background: var(--panel); border:1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .sidebar h3 { margin: 6px 0 10px; color:#bbf7d0; }
+    .sidebar .stat { margin:8px 0; font-size:.95rem; display:flex; justify-content:space-between; }
+    .sidebar .pill { display:inline-block; border:1px solid var(--line); background:#0b1220; color:#cbd5e1; padding:4px 10px; border-radius:999px; font-size:.85rem; }
+
+    .grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: start; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
     .panel h2 { margin: 8px 0 12px; color: #93c5fd; }
     .video-wrapper { display: flex; justify-content: center; align-items: center; background: #0b1220; border-radius: 8px; overflow: hidden; }
     img.stream { width: 100%; height: auto; display: block; }
@@ -17,26 +29,38 @@
     .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #0b1220; border: 1px solid #334155; color: #cbd5e1; }
     .row { display: flex; align-items: center; justify-content: space-between; }
     .actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
-    a.button, button.button { padding: 8px 12px; border-radius: 8px; background: #2563eb; color: white; text-decoration: none; border: none; cursor: pointer; }
-    a.button:hover, button.button:hover { background: #1d4ed8; }
-    .muted { color: #94a3b8; font-size: 0.9rem; }
+    a.button, button.button { padding: 8px 12px; border-radius: 8px; background: var(--brand); color: #0a0f1f; text-decoration: none; border: none; cursor: pointer; font-weight:800; }
+    a.button:hover, button.button:hover { background: #16a34a; }
+    .muted { color: var(--muted); font-size: 0.9rem; }
     .ai { margin-top: 16px; }
     textarea { width: 100%; min-height: 90px; border-radius: 8px; border: 1px solid #334155; background: #0b1220; color: #e2e8f0; padding: 8px; }
     .insights { white-space: pre-wrap; background: #0b1220; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-top: 10px; min-height: 80px; }
   </style>
 </head>
 <body>
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand"><div class="logo"></div> RannNiti</div>
+      <div class="brand"><a href="/history" style="margin-right:12px;">History</a><a href="/">New Session</a></div>
+    </div>
+  </div>
   <div class="container">
+    <div class="sidebar">
+      <h3>Session</h3>
+      <div class="stat"><span>Exercise</span><span class="pill" id="ex_badge">-</span></div>
+      <div class="stat"><span>Status</span><span class="pill" id="status_badge">Running</span></div>
+      <div class="stat"><span>CSV</span><a id="download_side" class="button" href="#" download>Download</a></div>
+    </div>
     <div class="grid">
       <div class="panel">
-        <h2>Annotated Stream</h2>
+        <h2>Annotated Stream — <span id="exercise_name">Exercise</span></h2>
         <div class="video-wrapper">
           <img class="stream" src="/stream/{{ session_id }}" alt="Live Analysis Stream" />
         </div>
       </div>
       <div class="panel">
         <h2>Live Metrics</h2>
-        <div class="metric">Reps: <span id="count" class="tag">0</span></div>
+        <div class="metric">Reps/Time: <span id="count" class="tag">0</span></div>
         <div class="metric">Elbow angle: <span id="elbow_angle" class="tag">0</span></div>
         <div class="metric">Hip angle: <span id="hip_angle" class="tag">0</span></div>
         <div class="metric">Feedback: <span id="feedback" class="tag">-</span></div>
@@ -46,8 +70,8 @@
         <p class="muted">Analysis runs once; metrics stop updating when finished.</p>
         <div class="ai">
           <h2>AI Insights</h2>
-          <p class="muted">Ask Gemini to review this session and suggest the best exercises.</p>
-          <textarea id="ai_prompt" placeholder="e.g., Analyze all data and recommend the best exercises and progressions for my push-ups based on this session. Include sets, reps, cues, and safety notes."></textarea>
+          <p class="muted">Ask Gemini to review this {{ exercise|default('exercise') }} session and suggest improvements.</p>
+          <textarea id="ai_prompt" placeholder="e.g., Analyze all data and recommend the best exercises and progressions for my {{ exercise|default('exercise') }} based on this session. Include sets, reps, cues, and safety notes."></textarea>
           <div class="actions">
             <button id="ask_btn" class="button">Get AI Insights</button>
           </div>
@@ -58,6 +82,7 @@
   </div>
   <script>
     const sessionId = "{{ session_id }}";
+    const exercise = "{{ exercise if exercise is defined else '' }}";
     const countEl = document.getElementById('count');
     const elbowEl = document.getElementById('elbow_angle');
     const hipEl = document.getElementById('hip_angle');
@@ -65,6 +90,15 @@
     const downloadEl = document.getElementById('download');
 
     downloadEl.href = `/download/${sessionId}`;
+    const downloadSide = document.getElementById('download_side');
+    if (downloadSide) downloadSide.href = downloadEl.href;
+    const exNameEl = document.getElementById('exercise_name');
+    if (exercise) {
+      const mapping = { pushup: 'Push-up', pullup: 'Pull-up', situp: 'Sit-up', jumping_jack: 'Jumping Jack', plank: 'Plank' };
+      exNameEl.textContent = mapping[exercise] || exercise;
+      const exBadge = document.getElementById('ex_badge');
+      if (exBadge) exBadge.textContent = mapping[exercise] || exercise;
+    }
 
     let stopped = false;
     async function pollMetrics(){
@@ -79,6 +113,8 @@
           feedbackEl.textContent = data.feedback || '-';
           if(data.is_done){
             stopped = true;
+            const status = document.getElementById('status_badge');
+            if(status) status.textContent = 'Finished';
           }
         }
       }catch(e){
