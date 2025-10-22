@@ -5,6 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies for OpenCV and MediaPipe
+# Install system dependencies for OpenCV and MediaPipe
 RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libsm6 \
